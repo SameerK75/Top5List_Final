@@ -86,9 +86,9 @@ function AuthContextProvider(props) {
                     loggedin: response.data.loggedIn
                 }
             });
-        }
         history.push("/");
         store.loadIdNamePairs();
+        }
     }
 
     return (

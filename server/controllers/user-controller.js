@@ -83,7 +83,7 @@ loginUser = async (req, res) => {
         const {email, password} = req.body;
         const existingUser = await User.findOne({ email: email })
         if(existingUser) {
-            if(bcrypt.compare(password, existingUser.passwordHash)) {
+            if(await bcrypt.compare(password, existingUser.passwordHash)) {
                 const token = auth.signToken(existingUser)
 
                 await res.cookie("token", token, {
@@ -104,6 +104,11 @@ loginUser = async (req, res) => {
                     .status(400)
                     .json({errorMessage: "Incorrect email or password"})
             }
+        }
+        else {
+            return res
+                .status(400)
+                .json({errorMessage: "Incorrect email or password"})
         }
     } catch (err) {
         console.error(err);

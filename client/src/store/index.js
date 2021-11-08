@@ -175,10 +175,23 @@ function GlobalStoreContextProvider(props) {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
                             let pairsArray = response.data.idNamePairs;
+                            let newPairs = []
+                            for(let i = 0; i < pairsArray.length; i++) {
+                                let id = pairsArray[i]._id
+                                let response = await api.getTop5ListById(id);
+                                if(response.data.success) {
+                                    let list = response.data.top5List;
+                                    if(list.ownerEmail) {
+                                        if(list.ownerEmail == auth.user.email) {
+                                        newPairs.push(pairsArray[i]);
+                                        }
+                                    }
+                                }
+                            }
                             storeReducer({
                                 type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                 payload: {
-                                    idNamePairs: pairsArray,
+                                    idNamePairs: newPairs,
                                     top5List: top5List
                                 }
                             });
@@ -233,15 +246,53 @@ function GlobalStoreContextProvider(props) {
         const response = await api.getTop5ListPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
+            let newPairs = [];
+            for(let i = 0; i < pairsArray.length; i++) {
+                let id = pairsArray[i]._id
+                let response = await api.getTop5ListById(id);
+                if(response.data.success) {
+                    let list = response.data.top5List;
+                    if(list.ownerEmail) {
+                        if(list.ownerEmail == auth.user.email) {
+                        newPairs.push(pairsArray[i]);
+                        }
+                    }
+                }
+            }
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                payload: pairsArray
+                payload: newPairs
             });
         }
         else {
             console.log("API FAILED TO GET THE LIST PAIRS");
         }
     }
+
+    // THIS FUNCTION SORTS THE PAIRS ARRAY BY USER EMAIL
+    store.sortIdNamePairs = async function () {
+        let pairsArray = store.idNamePairs;
+        console.log(pairsArray);
+        console.log(pairsArray.length);
+        let newPairs = [];
+        for(let i = 0; i < pairsArray.length; i++) {
+            let id = pairsArray[i]._id
+            let response = await api.getTop5ListById(id);
+            if(response.data.success) {
+                let list = response.data.top5List;
+                if(list.ownerEmail) {
+                    if(list.ownerEmail == auth.user.email) {
+                        newPairs.push(pairsArray[i]);
+                    }
+                }
+            }
+        }
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: newPairs
+        })
+    }
+
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE

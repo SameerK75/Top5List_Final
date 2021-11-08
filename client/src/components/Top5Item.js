@@ -112,7 +112,7 @@ function Top5Item(props) {
                 }}
             >
             <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                <IconButton onClick={handleToggleEdit} aria-label='edit' disabled = {store.isItemEditActive}>
                     <EditIcon style={{fontSize:'48pt'}}  />
                 </IconButton>
             </Box>

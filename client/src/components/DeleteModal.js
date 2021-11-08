@@ -34,7 +34,7 @@ export default function DeleteModal() {
 
     return(
         <Modal
-        open = {store.listMarkedForDeletion}
+        open = {store.listMarkedForDeletion !== null}
         onClose = {handleCloseModal}
         aria-labelledby = "modal-title"
         >

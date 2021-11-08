@@ -15,7 +15,8 @@ export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     REGISTER_USER: "REGISTER_USER",
     LOGIN_USER: "LOGIN_USER",
-    CLOSE_MODAL: "CLOSE_MODAL"
+    CLOSE_MODAL: "CLOSE_MODAL",
+    LOGOUT_USER: "LOGOUT_USER"
 }
 
 function AuthContextProvider(props) {
@@ -66,21 +67,45 @@ function AuthContextProvider(props) {
                     displayError: false
                 })
             }
+            case AuthActionType.LOGOUT_USER: {
+                return setAuth({
+                    user: null,
+                    loggedIn: null,
+                    errorMessage: "",
+                    displayError: false
+                })
+            }
             default:
                 return auth;
         }
     }
 
     auth.getLoggedIn = async function () {
-        const response = await api.getLoggedIn();
+        try{
+            const response = await api.getLoggedIn();
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.GET_LOGGED_IN,
+                    payload: {
+                        loggedIn: response.data.loggedIn,
+                        user: response.data.user
+                    }
+                });
+            }
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    auth.logoutUser = async function () {
+        const response = await api.logoutUser();
         if (response.status === 200) {
             authReducer({
-                type: AuthActionType.SET_LOGGED_IN,
-                payload: {
-                    loggedIn: response.data.loggedIn,
-                    user: response.data.user
-                }
-            });
+                type: AuthActionType.LOGOUT_USER,
+                payload: {}
+            })
+            history.push("/");
         }
     }
 

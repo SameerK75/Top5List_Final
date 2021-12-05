@@ -6,6 +6,12 @@ import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { Grid, Typography } from '@mui/material';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -19,6 +25,7 @@ function ListCard(props) {
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair } = props;
+    const [isExpanded, setExpanded] = useState(false);
 
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
@@ -56,11 +63,51 @@ function ListCard(props) {
         setText(event.target.value);
     }
 
+    let newCard =
+        <ListItem
+            id={idNamePair._id}
+            key={idNamePair._id}
+            sx={{ marginTop: '15px', display: 'flex', p: 1, border: "1px solid", borderRadius: "25px", height: "145px" }}
+            style={{
+            fontSize: '48pt',
+            width: '100%'
+            }}
+        >
+            <Grid container>   
+                <Grid item xs = {7} >
+                    <Box sx = {{flexDirection: 'column'}}>
+                        <Typography variant = "h4" fontSize = "40px">{idNamePair.name}</Typography>
+                        <Typography variant = "h4" fontSize = "15px">By: McKilla Gorilla</Typography>
+                    </Box>
+                </Grid>
+                <Grid item xs = {1}> <IconButton> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  
+                </Grid>
+                <Grid item xs = {1}>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
+                </Grid>
+                <Grid item xs = {1}> <IconButton><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>
+                </Grid>
+                <Grid item xs = {1}>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
+                </Grid>
+                <Grid item xs = {1}> <IconButton><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
+                </Grid>
+
+                <Grid item xs = {7} >
+                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>Published: </Typography>
+                </Grid>
+                <Grid item xs = {3}>
+                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> Views: 0</Typography>
+                </Grid>
+                <Grid item xs = {2}> <IconButton sx = {{position: 'relative', bottom: "3%", left: "58%"}}><ExpandMoreIcon/></IconButton> </Grid>
+            </Grid>
+        </ListItem>
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
+            sx={{ marginTop: '15px', display: 'flex', p: 1}}
             button
             onClick={(event) => {
                 handleLoadList(event, idNamePair._id)
@@ -68,7 +115,7 @@ function ListCard(props) {
             }
             style={{
                 fontSize: '48pt',
-                width: '100%'
+                width: '100%',
             }}
         >
                 <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
@@ -106,7 +153,7 @@ function ListCard(props) {
             />
     }
     return (
-        cardElement
+        newCard
     );
 }
 

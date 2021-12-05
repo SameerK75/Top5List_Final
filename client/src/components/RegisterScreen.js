@@ -112,7 +112,7 @@ export default function RegisterScreen() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/login/" variant="body2">
+                                <Link to = "/login/" href="/login/" variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>

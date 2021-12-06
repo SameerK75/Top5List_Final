@@ -38,12 +38,56 @@ function ListCard(props) {
 
     const {listName, listUser, items} = props;
 
-
+    console.log(props.id);
     console.log(store.allLists);    
    
 
-    function handleView() {
+    function handleLike() {
+        if(likes.includes(listUser)) {
+            let newLikes = likes;
+            let index = likes.indexOf(listUser)
+            newLikes.splice(index, 1)
+            store.Like(props.id, newLikes);
+        }
+        else if(dislikes.includes(listUser)) {
+            let newDislikes = dislikes;
+            let index = dislikes.indexOf(listUser)
+            newDislikes.splice(index,1)
+            store.Dislike(props.id, newDislikes);
+            let newLikes = likes;
+            newLikes.push(listUser);
+            store.Like(props.id, newLikes);
+        }
+        else {
+            let newLikes = likes;
+            console.log(newLikes);
+            newLikes.push(listUser);
+            console.log(newLikes);
+            store.Like(props.id, newLikes);
+        }
+    }
 
+    function handleDislike() {
+        if(dislikes.includes(listUser)) {
+            let newDislikes = dislikes;
+            let index = dislikes.indexOf(listUser)
+            newDislikes.splice(index,1)
+            store.Dislike(props.id, newDislikes);
+        }
+        else if(likes.includes(listUser)) {
+            let newLikes = likes;
+            let index = likes.indexOf(listUser)
+            newLikes.splice(index, 1)
+            store.Like(props.id, newLikes);
+            let newDislikes = dislikes;
+            newDislikes.push(listUser);
+            store.Dislike(props.id, newDislikes);
+        }
+        else {
+            let newDislikes = dislikes;
+            newDislikes.push(listUser);
+            store.Dislike(props.id, newDislikes);
+        }
     }
 
     function handleLoadList(event, id) {
@@ -107,15 +151,15 @@ function ListCard(props) {
                         <Typography variant = "h4" fontSize = "15px">By: {listUser}</Typography>
                     </Box>
                 </Grid>
-                <Grid item xs = {1}> <IconButton> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  
+                <Grid item xs = {1}> <IconButton onClick = {handleLike}> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  
                 </Grid>
                 <Grid item xs = {1}>
-                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{likes.length}</Typography>
                 </Grid>
-                <Grid item xs = {1}> <IconButton><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>
+                <Grid item xs = {1}> <IconButton onClick = {handleDislike}><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>
                 </Grid>
                 <Grid item xs = {1}>
-                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikes.length}</Typography>
                 </Grid>
                 <Grid item xs = {1}> <IconButton onClick={(event) => {
                         handleDeleteList(event, props.key)
@@ -157,12 +201,12 @@ function ListCard(props) {
                 <Grid item xs = {1}> <IconButton> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  
                 </Grid>
                 <Grid item xs = {1}>
-                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{likes.length}</Typography>
                 </Grid>
                 <Grid item xs = {1}> <IconButton><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>
                 </Grid>
                 <Grid item xs = {1}>
-                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikes.length}</Typography>
                 </Grid>
                 <Grid item xs = {1}> <IconButton ><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
                 </Grid>

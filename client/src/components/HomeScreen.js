@@ -55,6 +55,7 @@ const HomeScreen = () => {
                     
                     <ListCard
                         key={list._id}
+                        id = {list._id}
                         listName={list.name}
                         items={list.items}
                         listUser={list.ownerUser}

@@ -359,28 +359,43 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    // THIS FUNCTION SORTS THE PAIRS ARRAY BY USER EMAIL
-    store.sortIdNamePairs = async function () {
-        let pairsArray = store.idNamePairs;
-        console.log(pairsArray);
-        console.log(pairsArray.length);
-        let newPairs = [];
-        for(let i = 0; i < pairsArray.length; i++) {
-            let id = pairsArray[i]._id
-            let response = await api.getTop5ListById(id);
-            if(response.data.success) {
-                let list = response.data.top5List;
-                if(list.ownerEmail) {
-                    if(list.ownerEmail == auth.user.email) {
-                        newPairs.push(pairsArray[i]);
-                    }
-                }
-            }
+    //THESE FUNCTIONS WILL MANAGE INTERACTIONS WITH THE LISTCARD
+
+    store.publish = async function (id) {
+        let response = await api.getTop5ListById(id)
+        if(response.data.success) {
+            let list = response.data.top5List;
+            list.published = true;
+            store.updateList(list, id)
         }
-        storeReducer({
-            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-            payload: newPairs
-        })
+    }
+
+    store.Like = async function (id, newLikes) {
+        let response = await api.getTop5ListById(id)
+        if(response.data.success) {
+            let list = response.data.top5List;
+            list.likes = newLikes;
+            store.updateList(list, id)
+        }
+    }
+    
+    store.Dislike = async function (id, newDislikes) {
+        let response = await api.getTop5ListById(id)
+        if(response.data.success) {
+            let list = response.data.top5List;
+            list.dislikes = newDislikes;
+            store.updateList(list, id)
+        }
+    }
+    
+    store.updateList = async function(list, id) {
+        let response = await api.updateTop5ListById(id, list)
+        if (response.data.success) {
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: store.currentList
+            });
+        }
     }
 
     //THIS FUNCTION RETRIEVES ALL THE LISTS

@@ -18,6 +18,11 @@ function WorkspaceScreen() {
         store.closeCurrentList();
     }
 
+    function handlePublish() {
+        store.publish(store.currentList._id)
+        store.closeCurrentList();
+    }
+
     let editItems = "";
     let listName = "";
     if (store.currentList) {
@@ -55,7 +60,7 @@ function WorkspaceScreen() {
             <div id = "workspace-buttons">
                 <Box>
                     <Button onClick = {handleSave}>Save</Button>
-                    <Button>Publish</Button>
+                    <Button onClick = {handlePublish}>Publish</Button>
                 </Box>
             </div>
         </div>

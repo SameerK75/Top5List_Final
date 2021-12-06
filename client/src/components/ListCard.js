@@ -14,6 +14,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { Grid, Typography } from '@mui/material';
 import { List } from '@mui/material';
 import Comments from './Comments.js';
+import AuthContext from '../auth';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -24,6 +25,7 @@ import Comments from './Comments.js';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair } = props;
@@ -72,6 +74,7 @@ function ListCard(props) {
     function handleClose() {
         setExpanded(false);
     }
+    let listCreator = auth.user.userName;
 
     let newCard =
         <ListItem
@@ -87,7 +90,7 @@ function ListCard(props) {
                 <Grid item xs = {7} >
                     <Box sx = {{flexDirection: 'column'}}>
                         <Typography variant = "h4" fontSize = "40px">{idNamePair.name}</Typography>
-                        <Typography variant = "h4" fontSize = "15px">By: McKilla Gorilla</Typography>
+                        <Typography variant = "h4" fontSize = "15px">By: {listCreator}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs = {1}> <IconButton> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  
@@ -134,7 +137,7 @@ function ListCard(props) {
                 <Grid item xs = {7} >
                     <Box sx = {{display: "flex", flexDirection: 'column'}}>
                         <Typography variant = "h4" fontSize = "40px">{idNamePair.name}</Typography>
-                        <Typography variant = "h4" fontSize = "15px">By: McKilla Gorilla</Typography>
+                        <Typography variant = "h4" fontSize = "15px">By: {listCreator}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs = {1}> <IconButton> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  

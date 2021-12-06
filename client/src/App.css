@@ -214,9 +214,9 @@ body {
 #list-selector-list {
   position: absolute;
   left: 0%;
-  top: 10%;
+  top: 11%;
   width: 100%;
-  height: 90%;
+  height: 87%;
   display: flex;
   flex-direction: column;
   overflow: scroll;

@@ -64,7 +64,7 @@ const HomeScreen = () => {
                 <IconButton sx = {{color: "#111111"}}> <GroupsOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
                 <IconButton sx = {{color: "#111111"}}> <PersonOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
                 <IconButton sx = {{color: "#111111"}}> <FunctionsIcon sx = {{fontSize: 50}} /> </IconButton>
-                <TextField label = "Search" fullWidth/>
+                <TextField label = "Search" fullWidth sx = {{height: "50%"}}/>
                 <Typography variant = "h2" sx = {{fontSize: 20, margin: "5px"}}>Sort By</Typography>
                 <IconButton sx = {{color: "#111111"}}> <SortIcon sx = {{fontSize: 50}} /> </IconButton>
             </div>

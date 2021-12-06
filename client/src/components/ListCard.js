@@ -100,7 +100,9 @@ function ListCard(props) {
                 <Grid item xs = {1}>
                     <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
                 </Grid>
-                <Grid item xs = {1}> <IconButton><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
+                <Grid item xs = {1}> <IconButton onClick={(event) => {
+                        handleDeleteList(event, idNamePair._id)
+                    }} aria-label='delete'><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
                 </Grid>
 
                 <Grid item xs = {7} >
@@ -145,7 +147,7 @@ function ListCard(props) {
                 <Grid item xs = {1}>
                     <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
                 </Grid>
-                <Grid item xs = {1}> <IconButton><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
+                <Grid item xs = {1}> <IconButton ><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
                 </Grid>
 
                 <Grid item xs = {6}>

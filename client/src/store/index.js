@@ -132,8 +132,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: payload,
                     allLists: store.allLists,
                     view: store.view,
-                    searchBar: "",
-                    sort: "",
+                    searchBar: store.searchBar,
+                    sort: store.sort,
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -147,8 +147,8 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     allLists: store.allLists,
                     view: store.view,
-                    searchBar: "",
-                    sort: "",
+                    searchBar: store.searchBar,
+                    sort: store.sort,
                 });
             }
             // UPDATE A LIST
@@ -353,14 +353,19 @@ function GlobalStoreContextProvider(props) {
             })
                 if(store.searchBar !== "") {
                     allLists = allLists.filter(function(element) {
-                        return element.name == store.searchBar
+                        return element.name.toUpperCase().startsWith(store.searchBar.toUpperCase())
                     })
                 } 
             }
             else if(store.view == "User") {
-                allLists = allLists.filter(function(element) {
-                    return element.ownerName.toUpperCase().startsWith(store.searchBar.toUpperCase())
-                })
+                if(store.searchBar == "") {
+                    allLists = [];
+                }
+                else {
+                    allLists = allLists.filter(function(element) {
+                        return element.ownerUser.toUpperCase().startsWith(store.searchBar.toUpperCase())
+                    })
+                }
             }
             else if(store.view == "Community") {
                 //const response2 = await api.getTop5CommunityLists()
@@ -485,6 +490,14 @@ function GlobalStoreContextProvider(props) {
         storeReducer({
             type: GlobalStoreActionType.CHANGE_VIEW,
             payload: newView 
+        });
+    }
+
+    store.loadUserLists = function() {
+        let newView = "User"
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_VIEW,
+            payload: newView
         });
     }
 

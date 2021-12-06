@@ -38,6 +38,10 @@ const HomeScreen = () => {
         store.loadYourLists();
     }
 
+    function handleUserLists() {
+        store.loadUserLists();
+    }
+
     function handleSearch(event) {
         if(event.code === 'Enter') {
             let search = event.target.value;
@@ -104,7 +108,7 @@ const HomeScreen = () => {
             <div id = "toolbar">
                 <IconButton  onClick = {handleYourLists} sx = {{color: "#111111"}}> <HomeOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
                 <IconButton  onClick = {handleAllLists} sx = {{color: "#111111"}}> <GroupsOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
-                <IconButton sx = {{color: "#111111"}}> <PersonOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
+                <IconButton  onClick = {handleUserLists} sx = {{color: "#111111"}}> <PersonOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
                 <IconButton sx = {{color: "#111111"}}> <FunctionsIcon sx = {{fontSize: 50}} /> </IconButton>
                 <TextField label = "Search" onKeyPress = {handleSearch} fullWidth sx = {{height: "50%"}}/>
                 <Typography variant = "h2" sx = {{fontSize: 20, margin: "5px"}}>Sort By</Typography>

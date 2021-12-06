@@ -28,7 +28,8 @@ export const GlobalStoreActionType = {
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     RETRIEVE_ALL_LISTS: "RETRIEVE_ALL_LISTS",
-    CHANGE_VIEW: "CHANGE_VIEW"
+    CHANGE_VIEW: "CHANGE_VIEW",
+    SEARCH_LIST: "SEARCH_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -70,7 +71,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     allLists: store.allLists,
-                    view: "Home",
+                    view: store.view,
                     searchBar: "",
                     sort: "",
                 });
@@ -85,7 +86,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     allLists: store.allLists,
-                    view: "Home",
+                    view: store.view,
                     searchBar: "",
                     sort: "",
                 })
@@ -100,7 +101,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     allLists: store.allLists,
-                    view: "Home",
+                    view: store.view,
                     searchBar: "",
                     sort: "",
                 })
@@ -130,7 +131,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: payload,
                     allLists: store.allLists,
-                    view: "Home",
+                    view: store.view,
                     searchBar: "",
                     sort: "",
                 });
@@ -145,7 +146,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     allLists: store.allLists,
-                    view: "Home",
+                    view: store.view,
                     searchBar: "",
                     sort: "",
                 });
@@ -160,8 +161,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     allLists: store.allLists,
-                    view: "Home",
-                    searchBar: "",
+                    view: store.view,
+                    searchBar: store.searchBar,
                     sort: "",
                 });
             }
@@ -205,13 +206,13 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     allLists: payload.allLists,
-                    view: "Home",
+                    view: store.view,
                     searchBar: "",
                     sort: "",
                 })
             }
 
-            //UPDATE LIST
+            //UPDATE VIEW
             case GlobalStoreActionType.CHANGE_VIEW: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
@@ -221,9 +222,25 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     allLists: store.allLists,
-                    view: "All",
+                    view: payload,
                     searchBar: "",
                     sort: "",
+                })
+            }
+
+            //SEARCH FOR LIST
+            case GlobalStoreActionType.SEARCH_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    allLists: store.allLists,
+                    view: store.view,
+                    searchBar: payload,
+                    sort: store.sort
                 })
             }
 
@@ -468,6 +485,13 @@ function GlobalStoreContextProvider(props) {
         storeReducer({
             type: GlobalStoreActionType.CHANGE_VIEW,
             payload: newView 
+        });
+    }
+
+    store.Search = function(search) {
+        storeReducer({
+            type:GlobalStoreActionType.SEARCH_LIST,
+            payload: search
         });
     }
 

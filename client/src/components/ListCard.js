@@ -44,49 +44,49 @@ function ListCard(props) {
    
 
     function handleLike() {
-        if(likes.includes(listUser)) {
+        if(likes.includes(auth.user.userName)) {
             let newLikes = likes;
-            let index = likes.indexOf(listUser)
+            let index = likes.indexOf(auth.user.userName)
             newLikes.splice(index, 1)
             store.Like(props.id, newLikes);
         }
-        else if(dislikes.includes(listUser)) {
+        else if(dislikes.includes(auth.user.userName)) {
             let newDislikes = dislikes;
-            let index = dislikes.indexOf(listUser)
+            let index = dislikes.indexOf(auth.user.userName)
             newDislikes.splice(index,1)
             store.Dislike(props.id, newDislikes);
             let newLikes = likes;
-            newLikes.push(listUser);
+            newLikes.push(auth.user.userName);
             store.Like(props.id, newLikes);
         }
         else {
             let newLikes = likes;
             console.log(newLikes);
-            newLikes.push(listUser);
+            newLikes.push(auth.user.userName);
             console.log(newLikes);
             store.Like(props.id, newLikes);
         }
     }
 
     function handleDislike() {
-        if(dislikes.includes(listUser)) {
+        if(dislikes.includes(auth.user.userName)) {
             let newDislikes = dislikes;
-            let index = dislikes.indexOf(listUser)
+            let index = dislikes.indexOf(auth.user.userName)
             newDislikes.splice(index,1)
             store.Dislike(props.id, newDislikes);
         }
-        else if(likes.includes(listUser)) {
+        else if(likes.includes(auth.user.userName)) {
             let newLikes = likes;
-            let index = likes.indexOf(listUser)
+            let index = likes.indexOf(auth.user.userName)
             newLikes.splice(index, 1)
             store.Like(props.id, newLikes);
             let newDislikes = dislikes;
-            newDislikes.push(listUser);
+            newDislikes.push(auth.user.userName);
             store.Dislike(props.id, newDislikes);
         }
         else {
             let newDislikes = dislikes;
-            newDislikes.push(listUser);
+            newDislikes.push(auth.user.userName);
             store.Dislike(props.id, newDislikes);
         }
     }
@@ -175,6 +175,14 @@ function ListCard(props) {
                     <Box sx = {{flexDirection: 'column', overflowY: "scroll", height: "100px"}}>
                     </Box>
     </Grid>
+    let deleteButton =
+    <IconButton onClick={(event) => {
+        handleDeleteList(event, props.id)
+    }} aria-label='delete'><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
+    
+    if(listUser !== auth.user.userName) {
+        deleteButton = "";
+    }
     if(published) {
         LikeButton = 
         <IconButton onClick = {handleLike}> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>;
@@ -235,9 +243,7 @@ function ListCard(props) {
                 <Grid item xs = {1}>
                     <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikesNum}</Typography>
                 </Grid>
-                <Grid item xs = {1}> <IconButton onClick={(event) => {
-                        handleDeleteList(event, props.id)
-                    }} aria-label='delete'><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
+                <Grid item xs = {1}> {deleteButton}
                 </Grid>
 
                 <Grid item xs = {7} >
@@ -279,9 +285,7 @@ function ListCard(props) {
                 <Grid item xs = {1}>
                     <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikesNum}</Typography>
                 </Grid>
-                <Grid item xs = {1}> <IconButton onClick={(event) => {
-                        handleDeleteList(event, props.id)
-                    }} aria-label='delete'  ><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
+                <Grid item xs = {1}> {deleteButton}
                 </Grid>
 
                 <Grid item xs = {6}>

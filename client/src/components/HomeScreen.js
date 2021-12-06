@@ -24,7 +24,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
         store.loadIdNamePairs();
-    }, [store.view]);
+    }, [store.view, store.searchBar]);
 
     function handleCreateNewList() {
         store.createNewList();
@@ -32,6 +32,17 @@ const HomeScreen = () => {
 
     function handleAllLists() {
         store.loadAllLists();
+    }
+
+    function handleYourLists() {
+        store.loadYourLists();
+    }
+
+    function handleSearch(event) {
+        if(event.code === 'Enter') {
+            let search = event.target.value;
+            store.Search(search);
+        }
     }
     let listCard = "";
     if (store) {
@@ -91,11 +102,11 @@ const HomeScreen = () => {
                 <Typography variant="h2">Your Lists</Typography>
             </div>
             <div id = "toolbar">
-                <IconButton sx = {{color: "#111111"}}> <HomeOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
-                <IconButton sx = {{color: "#111111"}}> <GroupsOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
+                <IconButton  onClick = {handleYourLists} sx = {{color: "#111111"}}> <HomeOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
+                <IconButton  onClick = {handleAllLists} sx = {{color: "#111111"}}> <GroupsOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
                 <IconButton sx = {{color: "#111111"}}> <PersonOutlinedIcon sx = {{fontSize: 50}} /> </IconButton>
                 <IconButton sx = {{color: "#111111"}}> <FunctionsIcon sx = {{fontSize: 50}} /> </IconButton>
-                <TextField label = "Search" fullWidth sx = {{height: "50%"}}/>
+                <TextField label = "Search" onKeyPress = {handleSearch} fullWidth sx = {{height: "50%"}}/>
                 <Typography variant = "h2" sx = {{fontSize: 20, margin: "5px"}}>Sort By</Typography>
                 <IconButton sx = {{color: "#111111"}}> <SortIcon sx = {{fontSize: 50}} /> </IconButton>
             </div>

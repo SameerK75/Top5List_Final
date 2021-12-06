@@ -30,14 +30,19 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair } = props;
     const [isExpanded, setExpanded] = useState(false);
-    const [views, updateViews] = useState(props.views);
+    const [views, setViews] = useState(props.views);
     const [likes, updateLikes] = useState(props.likes);
     const [dislikes, updateDislikes] = useState(props.dislikes);
     const [comments, updateComments] = useState(props.comments);
     const [published, setPublished] = useState(props.published);
 
-    const {listName, listUser, items} = props;
+    const {listName, listUser, items, publishDate} = props;
 
+    let date = new Date();
+    let publishdate = date.toDateString();
+    publishdate = publishdate.substring(4);
+
+    //console.log(publishdate);
     console.log(props.id);
     console.log(store.allLists);    
    
@@ -128,6 +133,9 @@ function ListCard(props) {
 
     function handleExpand() {
         setExpanded(true);
+        let newViews = views + 1
+        store.Views(props.id, newViews);
+        setViews(newViews);
     }
 
     function handleClose() {
@@ -162,12 +170,12 @@ function ListCard(props) {
                     <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikes.length}</Typography>
                 </Grid>
                 <Grid item xs = {1}> <IconButton onClick={(event) => {
-                        handleDeleteList(event, props.key)
+                        handleDeleteList(event, props.id)
                     }} aria-label='delete'><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
                 </Grid>
 
                 <Grid item xs = {7} >
-                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>Published: </Typography>
+                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>Published: {publishDate} </Typography>
                 </Grid>
                 <Grid item xs = {3}>
                     <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> Views: {views} </Typography>
@@ -252,7 +260,7 @@ function ListCard(props) {
                     <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>Published: </Typography>
                 </Grid>
                 <Grid item xs = {3}>
-                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> Views: 0</Typography>
+                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> Views: {views}</Typography>
                 </Grid>
                 <Grid item xs = {2}> <IconButton onClick = {handleClose} sx = {{position: 'relative', bottom: "3%", left: "58%"}}><ExpandLessIcon/></IconButton> </Grid>
             </Grid>

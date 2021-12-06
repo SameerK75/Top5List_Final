@@ -64,6 +64,7 @@ const HomeScreen = () => {
                         dislikes = {list.dislikes}
                         comments = {list.comments}
                         published = {list.published}
+                        publishDate = {list.publishDate}
                         selected={false}
                     />
                 ))

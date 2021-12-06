@@ -19,8 +19,7 @@ function WorkspaceScreen() {
     }
 
     function handlePublish() {
-        store.publish(store.currentList._id)
-        store.closeCurrentList();
+        store.Publish(store.currentList._id)
     }
 
     let editItems = "";

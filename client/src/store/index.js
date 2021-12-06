@@ -285,6 +285,7 @@ function GlobalStoreContextProvider(props) {
             dislikes: [],
             comments: [],
             published: false,
+            publishDate: "none"
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
@@ -361,12 +362,17 @@ function GlobalStoreContextProvider(props) {
 
     //THESE FUNCTIONS WILL MANAGE INTERACTIONS WITH THE LISTCARD
 
-    store.publish = async function (id) {
+    store.Publish = async function (id) {
         let response = await api.getTop5ListById(id)
         if(response.data.success) {
             let list = response.data.top5List;
             list.published = true;
-            store.updateList(list, id)
+            let date = new Date();
+            let publishDate = date.toDateString();
+            publishDate = publishDate.substring(4);
+            list.publishDate = publishDate;
+            store.updateList(list, id);
+            history.push("/");
         }
     }
 
@@ -385,6 +391,15 @@ function GlobalStoreContextProvider(props) {
             let list = response.data.top5List;
             list.dislikes = newDislikes;
             store.updateList(list, id)
+        }
+    }
+
+    store.Views = async function (id, newViews) {
+        let response = await api.getTop5ListById(id)
+        if(response.data.success) {
+            let list = response.data.top5List;
+            list.views = newViews;
+            store.updateList(list, id);
         }
     }
     

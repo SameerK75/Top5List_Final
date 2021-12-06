@@ -158,6 +158,30 @@ function ListCard(props) {
         setExpanded(false);
     }
 
+    //CONDITIONALS FOR BUTTONS
+    let LikeButton = "";
+    let likesNum = "";
+    let publishedtext ="";
+    let DislikeButton = "";
+    let dislikesNum = "";
+    let viewstext = "";
+
+    if(published) {
+        LikeButton = 
+        <IconButton onClick = {handleLike}> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>;
+
+        likesNum = likes.length;
+
+        publishedtext = "Published: " + publishDate;
+
+        DislikeButton = <IconButton onClick = {handleDislike}><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>;
+
+        dislikesNum = dislikes.length;
+
+        viewstext = "Views: " + views;
+
+    }
+
     let newCard =
         <ListItem
             id={props.key}
@@ -175,15 +199,15 @@ function ListCard(props) {
                         <Typography variant = "h4" fontSize = "15px">By: {listUser}</Typography>
                     </Box>
                 </Grid>
-                <Grid item xs = {1}> <IconButton onClick = {handleLike}> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  
+                <Grid item xs = {1}> {LikeButton}  
                 </Grid>
                 <Grid item xs = {1}>
-                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{likes.length}</Typography>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{likesNum}</Typography>
                 </Grid>
-                <Grid item xs = {1}> <IconButton onClick = {handleDislike}><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>
+                <Grid item xs = {1}> {DislikeButton}
                 </Grid>
                 <Grid item xs = {1}>
-                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikes.length}</Typography>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikesNum}</Typography>
                 </Grid>
                 <Grid item xs = {1}> <IconButton onClick={(event) => {
                         handleDeleteList(event, props.id)
@@ -191,10 +215,10 @@ function ListCard(props) {
                 </Grid>
 
                 <Grid item xs = {7} >
-                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>Published: {publishDate} </Typography>
+                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>{publishedtext} </Typography>
                 </Grid>
                 <Grid item xs = {3}>
-                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> Views: {views} </Typography>
+                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> {viewstext} </Typography>
                 </Grid>
                 <Grid item xs = {2}> <IconButton onClick = {handleExpand} sx = {{position: 'relative', bottom: "3%", left: "58%"}}><ExpandMoreIcon/></IconButton> </Grid>
             </Grid>
@@ -235,7 +259,7 @@ function ListCard(props) {
                 </Grid>
 
                 <Grid item xs = {6}>
-                    <Box sx = {{display: "flex", flexDirection: 'column'}}>
+                    <Box sx = {{display: "flex", flexDirection: 'column', height: "150px"}}>
                         <Typography variant = "h4" fontSize = "20px">1. {items[0]}</Typography>
                         <Typography variant = "h4" fontSize = "20px">2. {items[1]}</Typography>
                         <Typography variant = "h4" fontSize = "20px">3. {items[2]}</Typography>

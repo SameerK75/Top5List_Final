@@ -362,11 +362,13 @@ function GlobalStoreContextProvider(props) {
 
     //THESE FUNCTIONS WILL MANAGE INTERACTIONS WITH THE LISTCARD
 
-    store.Publish = async function (id) {
+    store.Publish = async function (id, name, items) {
         let response = await api.getTop5ListById(id)
         if(response.data.success) {
             let list = response.data.top5List;
             list.published = true;
+            list.name = name;
+            list.items = items;
             let date = new Date();
             let publishDate = date.toDateString();
             publishDate = publishDate.substring(4);
@@ -412,6 +414,16 @@ function GlobalStoreContextProvider(props) {
         }
     }
     
+    store.updateListItems = async function(id, name, items) {
+        let response = await api.getTop5ListById(id)
+        if(response.data.success) {
+            let list = response.data.top5List;
+            list.name = name;
+            list.items = items;
+            store.updateList(list, id);
+            history.push("/");
+        }
+    }
     store.updateList = async function(list, id) {
         let response = await api.updateTop5ListById(id, list)
         if (response.data.success) {

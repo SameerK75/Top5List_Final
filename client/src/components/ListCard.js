@@ -38,13 +38,10 @@ function ListCard(props) {
 
     const {listName, listUser, items, publishDate} = props;
 
-    let date = new Date();
-    let publishdate = date.toDateString();
-    publishdate = publishdate.substring(4);
 
-    //console.log(publishdate);
     console.log(props.id);
-    console.log(store.allLists);    
+    console.log(store.allLists); 
+    console.log(comments);   
    
 
     function handleLike() {
@@ -93,6 +90,25 @@ function ListCard(props) {
             newDislikes.push(listUser);
             store.Dislike(props.id, newDislikes);
         }
+    }
+
+    function handleComment(event) {
+        if(event.code === 'Enter') {
+            let user = auth.user.userName;
+            let comment = event.target.value;
+            console.log(comment);
+            let pair = {
+                user: user,
+                comment: comment
+            }
+            let newComments = comments;
+            newComments.unshift(pair);
+            console.log(newComments);
+            store.Comment(props.id, newComments);
+            updateComments(newComments);
+            event.target.value = "";
+        }
+        
     }
 
     function handleLoadList(event, id) {
@@ -185,9 +201,8 @@ function ListCard(props) {
         </ListItem>
 
 
-    let randomkey = "12312412"
-    let user = "username"
-    let comment = "comment here"
+    let commentsOrder = comments.reverse();
+    console.log(commentsOrder);
     if (isExpanded) {
         newCard =
         <ListItem
@@ -231,29 +246,17 @@ function ListCard(props) {
                 <Grid item xs = {6} >
                     <Box sx = {{flexDirection: 'column', overflowY: "scroll", height: "100px"}}>
                         <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
-                            <Comments
-                                key = {randomkey}
-                                user = {user}
-                                comment = {"super long comment aaaaa what happening bruh no waaaay"}
-                            />
-                            <Comments
-                                key = {"12"}
-                                user = {user}
-                                comment = {comment}
-                            />
-                            <Comments
-                                key = {"123"}
-                                user = {user}
-                                comment = {comment}
-                            />
-                            <Comments
-                                key = {"1234"}
-                                user = {user}
-                                comment = {comment}
-                            />
+                            {
+                                comments.map((pair) => (
+                                 <Comments
+                                 key = {pair.comment}
+                                 user = {pair.user}
+                                 comment = {pair.comment}/>   
+                                ))
+                            }
                         </List>
                     </Box>
-                    <TextField label = "Add Comment" fullWidth height = "30px"/>
+                    <TextField label = "Add Comment" fullWidth height = "30px" id ="comment" name = "comment" onKeyPress = {handleComment}/>
                 </Grid>
 
                 <Grid item xs = {7} >

@@ -7,7 +7,7 @@ import { Typography } from '@mui/material';
 
 function Comments(props) {
     const { store } = useContext(GlobalStoreContext);
-
+    const {user, comment} = props;
     let commentCard =
         <ListItem
         sx={{ marginTop: '15px', display: 'flex', p: 1, border: "1px solid", borderRadius: "25px", height: "100px", height: "auto", wordWrap: "break-word"}}
@@ -17,8 +17,8 @@ function Comments(props) {
             }}
         >
             <Box sx = {{display: "flex", flexDirection: "column"}}>
-                <Typography sx = {{fontSize: "8pt", color: "#000FFF", textDecoration: "underline", }}>{props.user}</Typography>
-                <Typography sx = {{fontSize: "15pt"}}>{props.comment}</Typography>
+                <Typography sx = {{fontSize: "8pt", color: "#000FFF", textDecoration: "underline", }}>{user}</Typography>
+                <Typography sx = {{fontSize: "15pt"}}>{comment}</Typography>
             </Box>
         </ListItem>
 

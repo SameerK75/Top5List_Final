@@ -402,6 +402,15 @@ function GlobalStoreContextProvider(props) {
             store.updateList(list, id);
         }
     }
+
+    store.Comment = async function (id, newComments) {
+        let response = await api.getTop5ListById(id)
+        if(response.data.success) {
+            let list = response.data.top5List;
+            list.comments = newComments;
+            store.updateList(list, id);
+        }
+    }
     
     store.updateList = async function(list, id) {
         let response = await api.updateTop5ListById(id, list)

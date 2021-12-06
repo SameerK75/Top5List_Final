@@ -14,7 +14,7 @@ import { useState } from 'react';
 */
 function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
-    const [itemsArray, setItems] = useState([]);
+    const [itemsArray, setItems] = useState(store.currentList.items);
     const [listTitle, setTitle] = useState(store.currentList.name)
 
     function handleChange(event) {
@@ -35,6 +35,7 @@ function WorkspaceScreen() {
 
     function handlePublish() {
         store.Publish(store.currentList._id, listTitle, itemsArray);
+    
     }
     let items = [];
     let editItems = "";

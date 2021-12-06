@@ -28,7 +28,6 @@ function ListCard(props) {
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
-    const { idNamePair } = props;
     const [isExpanded, setExpanded] = useState(false);
     const [views, setViews] = useState(props.views);
     const [likes, updateLikes] = useState(props.likes);
@@ -149,9 +148,11 @@ function ListCard(props) {
 
     function handleExpand() {
         setExpanded(true);
-        let newViews = views + 1
-        store.Views(props.id, newViews);
-        setViews(newViews);
+        if(published) {
+            let newViews = views + 1
+            store.Views(props.id, newViews);
+            setViews(newViews);
+        }
     }
 
     function handleClose() {
@@ -161,18 +162,26 @@ function ListCard(props) {
     //CONDITIONALS FOR BUTTONS
     let LikeButton = "";
     let likesNum = "";
-    let publishedtext ="";
+    let publishedtext =<Typography variant = "h5"
+    fontSize = "15px"
+    color = "#FF0000"
+    onClick = {(event) => {handleLoadList(event, props.id)}}
+    sx = {{position: "relative", top: "40%", textDecoration : "underline" }}>Edit</Typography>;
     let DislikeButton = "";
     let dislikesNum = "";
     let viewstext = "";
-
+    let commentCards = 
+    <Grid item xs = {6} >
+                    <Box sx = {{flexDirection: 'column', overflowY: "scroll", height: "100px"}}>
+                    </Box>
+    </Grid>
     if(published) {
         LikeButton = 
         <IconButton onClick = {handleLike}> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>;
 
         likesNum = likes.length;
 
-        publishedtext = "Published: " + publishDate;
+        publishedtext = <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>Published: {publishDate}</Typography>
 
         DislikeButton = <IconButton onClick = {handleDislike}><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>;
 
@@ -180,6 +189,23 @@ function ListCard(props) {
 
         viewstext = "Views: " + views;
 
+        commentCards = 
+        <Grid item xs = {6} >
+            <Box sx = {{flexDirection: 'column', overflowY: "scroll", height: "100px"}}>
+                        <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+                            {
+                                comments.map((pair) => (
+                                 <Comments
+                                 key = {pair.comment}
+                                 user = {pair.user}
+                                 comment = {pair.comment}/>   
+                                ))
+                            }
+                        </List>
+            </Box>
+                <TextField label = "Add Comment" fullWidth height = "30px" id ="comment" name = "comment" onKeyPress = {handleComment}/>
+        </Grid>
+        
     }
 
     let newCard =
@@ -215,7 +241,7 @@ function ListCard(props) {
                 </Grid>
 
                 <Grid item xs = {7} >
-                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>{publishedtext} </Typography>
+                    {publishedtext}
                 </Grid>
                 <Grid item xs = {3}>
                     <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> {viewstext} </Typography>
@@ -225,8 +251,6 @@ function ListCard(props) {
         </ListItem>
 
 
-    let commentsOrder = comments.reverse();
-    console.log(commentsOrder);
     if (isExpanded) {
         newCard =
         <ListItem
@@ -245,17 +269,19 @@ function ListCard(props) {
                         <Typography variant = "h4" fontSize = "15px">By: {listUser}</Typography>
                     </Box>
                 </Grid>
-                <Grid item xs = {1}> <IconButton> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  
+                <Grid item xs = {1}> {LikeButton}  
                 </Grid>
                 <Grid item xs = {1}>
-                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{likes.length}</Typography>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{likesNum}</Typography>
                 </Grid>
-                <Grid item xs = {1}> <IconButton><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>
+                <Grid item xs = {1}> {DislikeButton}
                 </Grid>
                 <Grid item xs = {1}>
-                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikes.length}</Typography>
+                    <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>{dislikesNum}</Typography>
                 </Grid>
-                <Grid item xs = {1}> <IconButton ><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
+                <Grid item xs = {1}> <IconButton onClick={(event) => {
+                        handleDeleteList(event, props.id)
+                    }} aria-label='delete'  ><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
                 </Grid>
 
                 <Grid item xs = {6}>
@@ -267,82 +293,18 @@ function ListCard(props) {
                         <Typography variant = "h4" fontSize = "20px">5. {items[4]}</Typography>
                     </Box>
                 </Grid>
-                <Grid item xs = {6} >
-                    <Box sx = {{flexDirection: 'column', overflowY: "scroll", height: "100px"}}>
-                        <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
-                            {
-                                comments.map((pair) => (
-                                 <Comments
-                                 key = {pair.comment}
-                                 user = {pair.user}
-                                 comment = {pair.comment}/>   
-                                ))
-                            }
-                        </List>
-                    </Box>
-                    <TextField label = "Add Comment" fullWidth height = "30px" id ="comment" name = "comment" onKeyPress = {handleComment}/>
-                </Grid>
-
+                {commentCards}
                 <Grid item xs = {7} >
-                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>Published: </Typography>
+                    {publishedtext}
                 </Grid>
                 <Grid item xs = {3}>
-                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> Views: {views}</Typography>
+                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>{viewstext}</Typography>
                 </Grid>
                 <Grid item xs = {2}> <IconButton onClick = {handleClose} sx = {{position: 'relative', bottom: "3%", left: "58%"}}><ExpandLessIcon/></IconButton> </Grid>
             </Grid>
         </ListItem> 
     }
-//Use box + typography for list items and List for comments (see list-selector-list)
-    let cardElement =
-        <ListItem
-            id={props.key}
-            key={props.key}
-            sx={{ marginTop: '15px', display: 'flex', p: 1}}
-            button
-            onClick={(event) => {
-                handleLoadList(event, props.key)
-            }
-            }
-            style={{
-                fontSize: '48pt',
-                width: '100%',
-            }}
-        >
-                <Box sx={{ p: 1, flexGrow: 1 }}>{listName}</Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                        <EditIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
-                </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton onClick={(event) => {
-                        handleDeleteList(event, props.key)
-                    }} aria-label='delete'>
-                        <DeleteIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
-                </Box>
-        </ListItem>
 
-    if (editActive) {
-        cardElement =
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id={"list-" + idNamePair._id}
-                label="Top 5 List Name"
-                name="name"
-                autoComplete="Top 5 List Name"
-                className='list-card'
-                onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
-                defaultValue={idNamePair.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
-                autoFocus
-            />
-    }
     return (
         newCard
     );

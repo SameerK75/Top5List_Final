@@ -24,10 +24,14 @@ const HomeScreen = () => {
 
     useEffect(() => {
         store.loadIdNamePairs();
-    }, []);
+    }, [store.view]);
 
     function handleCreateNewList() {
         store.createNewList();
+    }
+
+    function handleAllLists() {
+        store.loadAllLists();
     }
     let listCard = "";
     if (store) {

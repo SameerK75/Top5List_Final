@@ -27,7 +27,8 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
-    RETRIEVE_ALL_LISTS: "RETRIEVE_ALL_LISTS"
+    RETRIEVE_ALL_LISTS: "RETRIEVE_ALL_LISTS",
+    CHANGE_VIEW: "CHANGE_VIEW"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -210,6 +211,22 @@ function GlobalStoreContextProvider(props) {
                 })
             }
 
+            //UPDATE LIST
+            case GlobalStoreActionType.CHANGE_VIEW: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    allLists: store.allLists,
+                    view: "All",
+                    searchBar: "",
+                    sort: "",
+                })
+            }
+
             default:
                 return store;
         }
@@ -325,24 +342,27 @@ function GlobalStoreContextProvider(props) {
             }
             else if(store.view == "User") {
                 allLists = allLists.filter(function(element) {
-                    return element.ownerUser == store.searchBar
+                    return element.ownerName.toUpperCase().startsWith(store.searchBar.toUpperCase())
                 })
             }
             else if(store.view == "Community") {
-                const response2 = await api.getTop5CommunityLists()
+                //const response2 = await api.getTop5CommunityLists()
                 /*if(response2.data.success) {
                     allLists = response.data
                 }*/
                 if(store.searchBar !== "") {
                     allLists = allLists.filter(function(element) {
-                        return element.name == store.searchBar
+                        return element.name.toUpperCase().startsWith(store.searchBar.toUpperCase())
                     })
                 }
             }
             else if(store.view == "All") {
+                allLists = allLists.filter(function(element) {
+                    return element.published == true
+                })
                 if(store.searchBar !== "") {
                     allLists = allLists.filter(function(element) {
-                        return element.name == store.searchBar
+                        return element.name.toUpperCase().startsWith(store.searchBar.toUpperCase())
                     })
                 }
             }
@@ -432,6 +452,23 @@ function GlobalStoreContextProvider(props) {
                 payload: store.currentList
             });
         }
+    }
+    //THESE FUNCTIONS WILL FILTER THE LISTS
+
+    store.loadAllLists = function() {
+        let newView = "All"
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_VIEW,
+            payload: newView
+        });
+    }
+
+    store.loadYourLists = function() {
+        let newView = "Home"
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_VIEW,
+            payload: newView 
+        });
     }
 
     //THIS FUNCTION RETRIEVES ALL THE LISTS

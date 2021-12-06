@@ -29,7 +29,8 @@ export const GlobalStoreActionType = {
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     RETRIEVE_ALL_LISTS: "RETRIEVE_ALL_LISTS",
     CHANGE_VIEW: "CHANGE_VIEW",
-    SEARCH_LIST: "SEARCH_LIST"
+    SEARCH_LIST: "SEARCH_LIST",
+    SORT_LISTS: "SORT_LISTS"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -243,6 +244,21 @@ function GlobalStoreContextProvider(props) {
                     sort: store.sort
                 })
             }
+            //SORT LISTS
+            case GlobalStoreActionType.SORT_LISTS: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    allLists: store.allLists,
+                    view: store.view,
+                    searchBar: store.searchBar,
+                    sort: payload
+                })
+            }
 
             default:
                 return store;
@@ -358,6 +374,9 @@ function GlobalStoreContextProvider(props) {
                 } 
             }
             else if(store.view == "User") {
+                allLists = allLists.filter(function(element) {
+                    return element.published == true;
+                })
                 if(store.searchBar == "") {
                     allLists = [];
                 }
@@ -387,6 +406,73 @@ function GlobalStoreContextProvider(props) {
                         return element.name.toUpperCase().startsWith(store.searchBar.toUpperCase())
                     })
                 }
+            }
+
+            //SORT HERE
+            if(store.sort == "Newest") {
+                allLists.sort(function compare(a, b) {
+                    if(Date.parse(a.publishDate) > Date.parse(b.publishDate)) {
+                        return -1
+                    }
+                    else if(Date.parse(a.publishDate) < Date.parse(b.publishDate)) {
+                        return 1
+                    }
+                    else {
+                        return 0
+                    }
+                })
+            }
+            else if(store.sort =="Oldest") {
+                allLists.sort(function compare(a, b) {
+                    if(Date.parse(a.publishDate) > Date.parse(b.publishDate)) {
+                        return 1
+                    }
+                    else if(Date.parse(a.publishDate) < Date.parse(b.publishDate)) {
+                        return -1
+                    }
+                    else {
+                        return 0
+                    }
+                })
+            }
+            else if(store.sort == "Views") {
+                allLists.sort(function compare(a, b) {
+                    if(a.views > b.views) {
+                        return -1
+                    }
+                    else if(a.views < b.views) { 
+                        return 1
+                    }
+                    else {
+                        return 0
+                    }
+                })
+            }
+            else if(store.sort == "Likes") {
+                allLists.sort(function compare(a, b) {
+                    if(a.likes.length > b.likes.length) {
+                        return -1
+                    }
+                    else if(a.likes.length < b.likes.length) {
+                        return 1
+                    }
+                    else {
+                        return 0
+                    }
+                })
+            }
+            else if(store.sort == "Dislikes") {
+                allLists.sort(function compare(a, b) {
+                    if(a.dislikes.length > b.dislikes.length) {
+                        return -1
+                    }
+                    else if(a.dislikes.length < b.dislikes.length) {
+                        return 1
+                    }
+                    else {
+                        return 0
+                    }
+                })
             }
            
             storeReducer({
@@ -505,6 +591,13 @@ function GlobalStoreContextProvider(props) {
         storeReducer({
             type:GlobalStoreActionType.SEARCH_LIST,
             payload: search
+        });
+    }
+
+    store.sortLists = function(sort) {
+        storeReducer({
+            type: GlobalStoreActionType.SORT_LISTS,
+            payload:sort
         });
     }
 

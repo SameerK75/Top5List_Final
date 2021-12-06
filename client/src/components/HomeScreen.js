@@ -13,6 +13,8 @@ import FunctionsIcon from '@mui/icons-material/Functions';
 import { TextField } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 import { Box } from '@mui/system';
+import { Menu, MenuItem } from '@mui/material';
+import { useState } from 'react';
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -21,10 +23,12 @@ import { Box } from '@mui/system';
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const [anchorSort, setAnchorSort] = useState(null);
+    const isMenuOpen = Boolean(anchorSort);
 
     useEffect(() => {
         store.loadIdNamePairs();
-    }, [store.view, store.searchBar]);
+    }, [store.view, store.searchBar, store.sort]);
 
     function handleCreateNewList() {
         store.createNewList();
@@ -48,6 +52,66 @@ const HomeScreen = () => {
             store.Search(search);
         }
     }
+
+    function sortNewest() {
+        let sort = "Newest";
+        store.sortLists(sort);
+    }
+
+    function sortOldest() {
+        let sort = "Oldest";
+        store.sortLists(sort);
+    }
+
+    function sortViews() {
+        let sort = "Views";
+        store.sortLists(sort);
+    }
+
+    function sortLikes() {
+        let sort = "Likes";
+        store.sortLists(sort);
+    }
+
+    function sortDislikes() {
+        let sort = "Dislikes";
+        store.sortLists(sort);
+    }
+
+    const handleSortMenuOpen = (event) => {
+        setAnchorSort(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorSort(null);
+    };
+
+    const sortMenuID = "sort-menu"
+    const sortMenu = (
+        <Menu
+            anchorEl={anchorSort}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            id={sortMenuID}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick = {sortNewest} >Publish Date (Newest)</MenuItem>
+            <MenuItem onClick = {sortOldest} >Publish Date (Oldest)</MenuItem>
+            <MenuItem onClick = {sortViews} >Views</MenuItem>
+            <MenuItem onClick = {sortLikes}>Likes</MenuItem>
+            <MenuItem onClick = {sortDislikes}>Dislikes</MenuItem>
+        </Menu>
+    )
+
+
     let listCard = "";
     if (store) {
         listCard = 
@@ -112,7 +176,11 @@ const HomeScreen = () => {
                 <IconButton sx = {{color: "#111111"}}> <FunctionsIcon sx = {{fontSize: 50}} /> </IconButton>
                 <TextField label = "Search" onKeyPress = {handleSearch} fullWidth sx = {{height: "50%"}}/>
                 <Typography variant = "h2" sx = {{fontSize: 20, margin: "5px"}}>Sort By</Typography>
-                <IconButton sx = {{color: "#111111"}}> <SortIcon sx = {{fontSize: 50}} /> </IconButton>
+                <IconButton aria-controls={sortMenuID}
+                            aria-haspopup="true" 
+                            onClick = {handleSortMenuOpen} 
+                            sx = {{color: "#111111"}}> <SortIcon sx = {{fontSize: 50}} /> </IconButton>
+                {sortMenu}
             </div>
             <div id="list-selector-list">
                 {

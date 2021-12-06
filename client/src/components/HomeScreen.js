@@ -46,6 +46,7 @@ const HomeScreen = () => {
             </List>;
     }
     let newListCard = "";
+    let array = [];
     if (store) {
         newListCard =
             <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
@@ -94,7 +95,7 @@ const HomeScreen = () => {
             </div>
             <div id="list-selector-list">
                 {
-                    listCard
+                    newListCard
                 }
             </div>
         </div>)

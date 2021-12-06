@@ -68,7 +68,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    allLists: store.allLists
+                    allLists: store.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -80,7 +83,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    allLists: store.allLists
+                    allLists: store.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 })
             }
             // CREATE A NEW LIST
@@ -92,7 +98,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    allLists: store.allLists
+                    allLists: store.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -104,7 +113,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    allLists: payload.allLists
+                    allLists: payload.allLists,
+                    view: store.view,
+                    searchBar: store.searchBar,
+                    sort: store.sort,
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -116,7 +128,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: payload,
-                    allLists: store.allLists
+                    allLists: store.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -128,7 +143,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    allLists: store.allLists
+                    allLists: store.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 });
             }
             // UPDATE A LIST
@@ -140,7 +158,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    allLists: store.allLists
+                    allLists: store.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 });
             }
             // START EDITING A LIST ITEM
@@ -152,7 +173,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: true,
                     listMarkedForDeletion: null,
-                    allLists: store.allLists
+                    allLists: store.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 });
             }
             // START EDITING A LIST NAME
@@ -164,7 +188,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: true,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    allLists: store.allLists
+                    allLists: store.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 });
             }
             //RETRIEVE ALL LISTS
@@ -176,7 +203,10 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    allLists: payload.allLists
+                    allLists: payload.allLists,
+                    view: "Home",
+                    searchBar: "",
+                    sort: "",
                 })
             }
 
@@ -276,28 +306,46 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
-        const response = await api.getTop5ListPairs();
+        let newPairs = [];
+        let allLists = [];
+        const response = await api.getTop5Lists()
         if (response.data.success) {
-            let pairsArray = response.data.idNamePairs;
-            let newPairs = [];
-            for(let i = 0; i < pairsArray.length; i++) {
-                let id = pairsArray[i]._id
-                let response = await api.getTop5ListById(id);
-                if(response.data.success) {
-                    let list = response.data.top5List;
-                    if(list.ownerEmail) {
-                        if(list.ownerEmail == auth.user.email) {
-                        newPairs.push(pairsArray[i]);
-                        }
-                    }
+           allLists = response.data.data;
+
+           if(store.view == "Home") {
+            allLists = allLists.filter(function(element) {
+                return element.ownerUser == auth.user.userName
+            })
+                if(store.searchBar !== "") {
+                    allLists = allLists.filter(function(element) {
+                        return element.name == store.searchBar
+                    })
+                } 
+            }
+            else if(store.view == "User") {
+                allLists = allLists.filter(function(element) {
+                    return element.ownerUser == store.searchBar
+                })
+            }
+            else if(store.view == "Community") {
+                const response2 = await api.getTop5CommunityLists()
+                /*if(response2.data.success) {
+                    allLists = response.data
+                }*/
+                if(store.searchBar !== "") {
+                    allLists = allLists.filter(function(element) {
+                        return element.name == store.searchBar
+                    })
                 }
             }
-            let allLists = [];
-            const response2 =  await api.getTop5Lists()
-            if(response2.data.success) {
-                allLists = response2.data.data;
-                console.log(allLists[1]);
+            else if(store.view == "All") {
+                if(store.searchBar !== "") {
+                    allLists = allLists.filter(function(element) {
+                        return element.name == store.searchBar
+                    })
+                }
             }
+           
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: {

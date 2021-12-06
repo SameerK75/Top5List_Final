@@ -36,30 +36,11 @@ function ListCard(props) {
     const [comments, updateComments] = useState(props.comments);
     const [published, setPublished] = useState(props.published);
 
-    //const {listName, listUser, items} = props;
+    const {listName, listUser, items} = props;
 
 
-    //console.log(store.allLists);    
-    let listUser = "";
-    if(store.allLists) {
-        let listArray = store.allLists;
-        for(let i = 0; i < listArray.length; i++) {
-            let list = listArray[i];
-            if(list._id == idNamePair._id) {
-                console.log(list);
-                listUser = list.ownerUser;
-                console.log(listUser);
-            }
-        }
-    }
-    if(store.allLists) {
-        let listArray = store.allLists;
-        console.log(listArray);
-        listArray = listArray.filter(function(element) {
-            return element.ownerUser == auth.user.userName
-        })
-        console.log(listArray);
-    }
+    console.log(store.allLists);    
+   
 
     function handleView() {
 
@@ -111,8 +92,8 @@ function ListCard(props) {
 
     let newCard =
         <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
+            id={props.key}
+            key={props.key}
             sx={{ marginTop: '15px', display: 'flex', p: 1, border: "1px solid", borderRadius: "25px", height: "145px" }}
             style={{
             fontSize: '48pt',
@@ -122,7 +103,7 @@ function ListCard(props) {
             <Grid container>   
                 <Grid item xs = {7} >
                     <Box sx = {{flexDirection: 'column'}}>
-                        <Typography variant = "h4" fontSize = "40px">{idNamePair.name}</Typography>
+                        <Typography variant = "h4" fontSize = "40px">{listName}</Typography>
                         <Typography variant = "h4" fontSize = "15px">By: {listUser}</Typography>
                     </Box>
                 </Grid>
@@ -137,7 +118,7 @@ function ListCard(props) {
                     <Typography variant = "h4" fontSize = "30px" sx = {{position: "relative", top: "40%"}}>0</Typography>
                 </Grid>
                 <Grid item xs = {1}> <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
+                        handleDeleteList(event, props.key)
                     }} aria-label='delete'><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
                 </Grid>
 
@@ -145,7 +126,7 @@ function ListCard(props) {
                     <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}>Published: </Typography>
                 </Grid>
                 <Grid item xs = {3}>
-                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> Views: 0</Typography>
+                    <Typography variant = "h5" fontSize = "15px" sx = {{position: "relative", top: "40%"}}> Views: {views} </Typography>
                 </Grid>
                 <Grid item xs = {2}> <IconButton onClick = {handleExpand} sx = {{position: 'relative', bottom: "3%", left: "58%"}}><ExpandMoreIcon/></IconButton> </Grid>
             </Grid>
@@ -158,8 +139,8 @@ function ListCard(props) {
     if (isExpanded) {
         newCard =
         <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
+            id={props.key}
+            key={props.key}
             sx={{ marginTop: '15px', display: 'flex', p: 1, border: "1px solid", borderRadius: "25px", height: "350px" }}
             style={{
             fontSize: '48pt',
@@ -169,7 +150,7 @@ function ListCard(props) {
             <Grid container>   
                 <Grid item xs = {7} >
                     <Box sx = {{display: "flex", flexDirection: 'column'}}>
-                        <Typography variant = "h4" fontSize = "40px">{idNamePair.name}</Typography>
+                        <Typography variant = "h4" fontSize = "40px">{listName}</Typography>
                         <Typography variant = "h4" fontSize = "15px">By: {listUser}</Typography>
                     </Box>
                 </Grid>
@@ -188,11 +169,11 @@ function ListCard(props) {
 
                 <Grid item xs = {6}>
                     <Box sx = {{display: "flex", flexDirection: 'column'}}>
-                        <Typography variant = "h4" fontSize = "20px">1. item 1</Typography>
-                        <Typography variant = "h4" fontSize = "20px">2. item 2</Typography>
-                        <Typography variant = "h4" fontSize = "20px">3. item 3</Typography>
-                        <Typography variant = "h4" fontSize = "20px">4. item 4</Typography>
-                        <Typography variant = "h4" fontSize = "20px">5. item 5</Typography>
+                        <Typography variant = "h4" fontSize = "20px">1. {items[0]}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">2. {items[1]}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">3. {items[2]}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">4. {items[3]}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">5. {items[4]}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs = {6} >
@@ -236,12 +217,12 @@ function ListCard(props) {
 //Use box + typography for list items and List for comments (see list-selector-list)
     let cardElement =
         <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
+            id={props.key}
+            key={props.key}
             sx={{ marginTop: '15px', display: 'flex', p: 1}}
             button
             onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
+                handleLoadList(event, props.key)
             }
             }
             style={{
@@ -249,7 +230,7 @@ function ListCard(props) {
                 width: '100%',
             }}
         >
-                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                <Box sx={{ p: 1, flexGrow: 1 }}>{listName}</Box>
                 <Box sx={{ p: 1 }}>
                     <IconButton onClick={handleToggleEdit} aria-label='edit'>
                         <EditIcon style={{fontSize:'48pt'}} />
@@ -257,7 +238,7 @@ function ListCard(props) {
                 </Box>
                 <Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
+                        handleDeleteList(event, props.key)
                     }} aria-label='delete'>
                         <DeleteIcon style={{fontSize:'48pt'}} />
                     </IconButton>

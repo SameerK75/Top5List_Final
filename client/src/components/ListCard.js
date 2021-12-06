@@ -30,6 +30,40 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair } = props;
     const [isExpanded, setExpanded] = useState(false);
+    const [views, updateViews] = useState(props.views);
+    const [likes, updateLikes] = useState(props.likes);
+    const [dislikes, updateDislikes] = useState(props.dislikes);
+    const [comments, updateComments] = useState(props.comments);
+    const [published, setPublished] = useState(props.published);
+
+    //const {listName, listUser, items} = props;
+
+
+    //console.log(store.allLists);    
+    let listUser = "";
+    if(store.allLists) {
+        let listArray = store.allLists;
+        for(let i = 0; i < listArray.length; i++) {
+            let list = listArray[i];
+            if(list._id == idNamePair._id) {
+                console.log(list);
+                listUser = list.ownerUser;
+                console.log(listUser);
+            }
+        }
+    }
+    if(store.allLists) {
+        let listArray = store.allLists;
+        console.log(listArray);
+        listArray = listArray.filter(function(element) {
+            return element.ownerUser == auth.user.userName
+        })
+        console.log(listArray);
+    }
+
+    function handleView() {
+
+    }
 
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
@@ -74,7 +108,6 @@ function ListCard(props) {
     function handleClose() {
         setExpanded(false);
     }
-    let listCreator = auth.user.userName;
 
     let newCard =
         <ListItem
@@ -90,7 +123,7 @@ function ListCard(props) {
                 <Grid item xs = {7} >
                     <Box sx = {{flexDirection: 'column'}}>
                         <Typography variant = "h4" fontSize = "40px">{idNamePair.name}</Typography>
-                        <Typography variant = "h4" fontSize = "15px">By: {listCreator}</Typography>
+                        <Typography variant = "h4" fontSize = "15px">By: {listUser}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs = {1}> <IconButton> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  
@@ -137,7 +170,7 @@ function ListCard(props) {
                 <Grid item xs = {7} >
                     <Box sx = {{display: "flex", flexDirection: 'column'}}>
                         <Typography variant = "h4" fontSize = "40px">{idNamePair.name}</Typography>
-                        <Typography variant = "h4" fontSize = "15px">By: {listCreator}</Typography>
+                        <Typography variant = "h4" fontSize = "15px">By: {listUser}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs = {1}> <IconButton> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>  

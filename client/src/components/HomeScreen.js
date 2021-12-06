@@ -35,9 +35,33 @@ const HomeScreen = () => {
             <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
             {
                 store.idNamePairs.map((pair) => (
+                    
                     <ListCard
                         key={pair._id}
                         idNamePair={pair}
+                        selected={false}
+                    />
+                ))
+            }
+            </List>;
+    }
+    let newListCard = "";
+    if (store) {
+        newListCard =
+            <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+            {
+                store.allLists.map((list) => (
+                    
+                    <ListCard
+                        key={list._id}
+                        listName={list.name}
+                        items={list.items}
+                        listUser={list.ownerUser}
+                        views = {list.views}
+                        likes = {list.likes}
+                        dislikes = {list.dislikes}
+                        comments = {list.comments}
+                        published = {list.published}
                         selected={false}
                     />
                 ))

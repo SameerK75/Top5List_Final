@@ -222,7 +222,7 @@ function ListCard(props) {
     //CONDITIONALS FOR BUTTONS
     let listOwner = "";
     if(store.view !== "Community") {
-        listOwner = listUser;
+        listOwner = "By: " + listUser;
     }
 
     let item1 = items[0]
@@ -330,7 +330,7 @@ function ListCard(props) {
                 <Grid item xs = {7} >
                     <Box sx = {{flexDirection: 'column'}}>
                         <Typography variant = "h4" fontSize = "40px">{listName}</Typography>
-                        <Typography variant = "h4" fontSize = "15px">By: {listOwner}</Typography>
+                        <Typography variant = "h4" fontSize = "15px">{listOwner}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs = {1}> {LikeButton}  

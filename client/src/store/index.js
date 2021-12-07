@@ -50,7 +50,7 @@ function GlobalStoreContextProvider(props) {
         allLists: [],
         view: "Home",
         searchBar: "",
-        sort: "",
+        sort: "Newest",
     });
     const history = useHistory();
 
@@ -89,7 +89,7 @@ function GlobalStoreContextProvider(props) {
                     allLists: store.allLists,
                     view: store.view,
                     searchBar: "",
-                    sort: "",
+                    sort: store.sort,
                 })
             }
             // CREATE A NEW LIST
@@ -104,7 +104,7 @@ function GlobalStoreContextProvider(props) {
                     allLists: store.allLists,
                     view: store.view,
                     searchBar: "",
-                    sort: "",
+                    sort: store.sort,
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -164,7 +164,7 @@ function GlobalStoreContextProvider(props) {
                     allLists: store.allLists,
                     view: store.view,
                     searchBar: store.searchBar,
-                    sort: "",
+                    sort: store.sort,
                 });
             }
             // START EDITING A LIST ITEM
@@ -225,7 +225,7 @@ function GlobalStoreContextProvider(props) {
                     allLists: store.allLists,
                     view: payload,
                     searchBar: "",
-                    sort: "",
+                    sort: "Newest",
                 })
             }
 

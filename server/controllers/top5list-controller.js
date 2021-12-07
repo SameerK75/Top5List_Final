@@ -1,4 +1,5 @@
 const Top5List = require('../models/top5list-model');
+const Top5CList = require('../models/top5clist-model')
 
 createTop5List = (req, res) => {
     const body = req.body;
@@ -58,7 +59,7 @@ updateTop5List = async (req, res) => {
         top5List.dislikes = body.dislikes
         top5List.comments = body.comments
         top5List.published = body.published
-        top5List.publishDate = body.publishDate;
+        top5List.publishDate = body.publishDate
         top5List
             .save()
             .then(() => {
@@ -141,11 +142,137 @@ getTop5ListPairs = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+
+//COMMUNITY LISTS
+
+createTop5CList = (req, res) => {
+    const body = req.body;
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a Top 5 List',
+        })
+    }
+
+    const top5CList = new Top5CList(body);
+    console.log("creating top5List: " + JSON.stringify(top5CList));
+    if (!top5List) {
+        return res.status(400).json({ success: false, error: err })
+    }
+
+    top5CList
+        .save()
+        .then(() => {
+            return res.status(201).json({
+                success: true,
+                top5CList: top5CList,
+                message: 'Top 5 List Created!'
+            })
+        })
+        .catch(error => {
+            return res.status(400).json({
+                error,
+                message: 'Top 5 List Not Created!'
+            })
+        })
+}
+
+updateTop5CList = async (req, res) => {
+    const body = req.body
+    console.log("updateTop5List: " + JSON.stringify(body));
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    Top5CList.findOne({ _id: req.params.id }, (err, top5CList) => {
+        console.log("top5List found: " + JSON.stringify(top5CList));
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Top 5 List not found!',
+            })
+        }
+
+        top5CList.name = body.name
+        top5CList.items = body.items
+        top5CList.views = body.views
+        top5CList.likes = body.likes
+        top5CList.dislikes = body.dislikes
+        top5CList.comments = body.comments
+        top5CList.published = body.published
+        top5CList.publishDate = body.publishDate
+        top5CList
+            .save()
+            .then(() => {
+                console.log("SUCCESS!!!");
+                return res.status(200).json({
+                    success: true,
+                    id: top5List._id,
+                    message: 'Top 5 List updated!',
+                })
+            })
+            .catch(error => {
+                console.log("FAILURE: " + JSON.stringify(error));
+                return res.status(404).json({
+                    error,
+                    message: 'Top 5 List not updated!',
+                })
+            })
+    })
+}
+
+deleteTop5CList = async (req, res) => {
+    Top5CList.findById({ _id: req.params.id }, (err, top5CList) => {
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Top 5 List not found!',
+            })
+        }
+        Top5CList.findOneAndDelete({ _id: req.params.id }, () => {
+            return res.status(200).json({ success: true, data: top5CList })
+        }).catch(err => console.log(err))
+    })
+}
+
+getTop5CListById = async (req, res) => {
+    await Top5CList.findById({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err });
+        }
+        return res.status(200).json({ success: true, top5CList: list })
+    }).catch(err => console.log(err))
+}
+getTop5CLists = async (req, res) => {
+    await Top5CList.find({}, (err, top5CLists) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        if (!top5CLists.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Top 5 Lists not found` })
+        }
+        return res.status(200).json({ success: true, data: top5CLists })
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
     createTop5List,
     updateTop5List,
     deleteTop5List,
     getTop5Lists,
     getTop5ListPairs,
-    getTop5ListById
+    getTop5ListById,
+
+    createTop5CList,
+    updateTop5CList,
+    deleteTop5CList,
+    getTop5CLists,
+    getTop5CListById
+
+
 }

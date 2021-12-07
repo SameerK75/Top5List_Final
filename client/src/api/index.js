@@ -34,6 +34,13 @@ export const registerUser = (payload) => api.post(`/register/`, payload)
 export const loginUser = (payload) => api.post(`/login/`, payload)
 export const logoutUser = () => api.get(`/logout/`)
 
+
+export const createTop5CList = (payload) => api.post(`/top5clist/`, payload)
+export const getTop5CLists = () => api.get(`/top5clists/`)
+export const updateTop5CListById = (id, payload) => api.put(`/top5clist/${id}`, payload)
+export const deleteTop5CListById = (id) => api.delete(`/top5clist/${id}`)
+export const getTop5CListById = (id) => api.get(`/top5clist/${id}`)
+
 const apis = {
     createTop5List,
     getTop5Lists,
@@ -45,7 +52,13 @@ const apis = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+
+    createTop5CList,
+    getTop5CLists,
+    updateTop5CListById,
+    deleteTop5CListById,
+    getTop5CListById
 }
 
 export default apis

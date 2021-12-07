@@ -15,4 +15,11 @@ router.post('/register', UserController.registerUser)
 router.get('/loggedIn', UserController.getLoggedIn)
 router.post('/login', UserController.loginUser)
 router.get('/logout', UserController.logoutUser)
+
+router.post('/top5clist', auth.verify, Top5ListController.createTop5CList)
+router.put('/top5clist/:id', auth.verify, Top5ListController.updateTop5CList)
+router.delete('/top5clist/:id', auth.verify, Top5ListController.deleteTop5CList)
+router.get('/top5clist/:id', auth.verify, Top5ListController.getTop5CListById)
+router.get('/top5clists', auth.verify, Top5ListController.getTop5CLists)
+
 module.exports = router

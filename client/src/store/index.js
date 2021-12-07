@@ -335,7 +335,7 @@ function GlobalStoreContextProvider(props) {
             dislikes: [],
             comments: [],
             published: false,
-            publishDate: "none"
+            publishDate: "none",
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
@@ -354,6 +354,7 @@ function GlobalStoreContextProvider(props) {
             console.log("API FAILED TO CREATE A NEW LIST");
         }
     }
+    //CREATE COMMUNITY LIST
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {

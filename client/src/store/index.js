@@ -360,9 +360,16 @@ function GlobalStoreContextProvider(props) {
     store.loadIdNamePairs = async function () {
         let newPairs = [];
         let allLists = [];
+        let cLists = [];
         const response = await api.getTop5Lists()
         if (response.data.success) {
            allLists = response.data.data;
+            console.log(allLists);
+           const response2 = await api.getTop5CLists()
+           if (response2.data.success) {
+            cLists = response2.data.data;
+            console.log(cLists);
+           }
 
            if(store.view == "Home") {
             allLists = allLists.filter(function(element) {
@@ -388,10 +395,7 @@ function GlobalStoreContextProvider(props) {
                 }
             }
             else if(store.view == "Community") {
-                //const response2 = await api.getTop5CommunityLists()
-                /*if(response2.data.success) {
-                    allLists = response.data
-                }*/
+                allLists = cLists;
                 if(store.searchBar !== "") {
                     allLists = allLists.filter(function(element) {
                         return element.name.toUpperCase().startsWith(store.searchBar.toUpperCase())
@@ -503,6 +507,99 @@ function GlobalStoreContextProvider(props) {
             publishDate = publishDate.substring(4);
             list.publishDate = publishDate;
             store.updateList(list, id);
+            
+            try {
+                let response2 = await api.getTop5CLists()
+            if(response2.data.success) {
+                let allCLists = response2.data.data;
+                let newLists = allCLists.filter(function(element) {
+                    return element.name.toUpperCase() == name.toUpperCase()
+                })
+                if(newLists.length > 0 ) {
+                    let commList = newLists[0];
+                    let votesArray = commList.items;
+                    let newVotesArray = votesArray;
+                    for(let i = 0; i < items.length; i++) {
+                        let matchFound = false;
+                        for(let j = 0; j < votesArray.length; j++) {
+                            if(items[i] == votesArray[j].item) {
+                                newVotesArray[j].votes += 5 - i;
+                                matchFound = true;
+                            }
+                        }
+                        if(matchFound == false) {
+                            let pair = {
+                                item: items[i],
+                                votes: 5 - i
+                            }
+                            newVotesArray.push(pair); 
+                        }
+                    }
+                    commList.items = newVotesArray;
+                    let response3 = await api.updateTop5CListById(commList._id, commList)
+                    if(response3.data.success) {
+                        console.log("CLIST UPDATED")
+                    }
+                }
+                else {
+                    let cDate = new Date()
+                    cDate = cDate.toDateString();
+                    cDate = cDate.substring(4);
+                    let votes = []
+                    for(let i = 0; i < items.length; i++) {
+                        let pair = {
+                            item: items[i],
+                            votes: 5 - i
+                        }
+                        votes.push(pair);
+                    }
+
+                    let payload = {
+                    name: name,
+                    items: votes,
+                    views: 0,
+                    likes: [],
+                    dislikes: [],
+                    comments: [],
+                    published: true,
+                    publishDate: cDate,
+                    }
+                    let response4 = await api.createTop5CList(payload);
+                    if(response4.data.success) {
+                        console.log("Comm list created")
+                    }
+                }   
+
+                }
+            }catch{
+                console.log("NO CLISTS RETRIEVED")
+                let cDate = new Date()
+                    cDate = cDate.toDateString();
+                    cDate = cDate.substring(4);
+                    let votes = []
+                    for(let i = 0; i < items.length; i++) {
+                        let pair = {
+                            item: items[i],
+                            votes: 5 - i
+                        }
+                        votes.push(pair);
+                    }
+
+                    let payload = {
+                    name: name,
+                    items: votes,
+                    views: 0,
+                    likes: [],
+                    dislikes: [],
+                    comments: [],
+                    published: true,
+                    publishDate: cDate,
+                    }
+                    let response4 = await api.createTop5CList(payload);
+                    if(response4.data.success) {
+                        console.log("Comm list created")
+                    }
+            }
             history.push("/");
         }
     }
@@ -515,6 +612,15 @@ function GlobalStoreContextProvider(props) {
             store.updateList(list, id)
         }
     }
+
+    store.CLike = async function (id, newLikes) {
+        let response = await api.getTop5CListById(id)
+        if(response.data.success) {
+            let list = response.data.top5CList;
+            list.likes = newLikes;
+            store.updateCList(list, id)
+        }
+    }
     
     store.Dislike = async function (id, newDislikes) {
         let response = await api.getTop5ListById(id)
@@ -522,6 +628,15 @@ function GlobalStoreContextProvider(props) {
             let list = response.data.top5List;
             list.dislikes = newDislikes;
             store.updateList(list, id)
+        }
+    }
+
+    store.CDislike = async function (id, newDislikes) {
+        let response = await api.getTop5CListById(id)
+        if(response.data.success) {
+            let list = response.data.top5CList;
+            list.dislikes = newDislikes;
+            store.updateCList(list, id)
         }
     }
 
@@ -534,12 +649,30 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.CViews = async function (id, newViews) {
+        let response = await api.getTop5CListById(id)
+        if(response.data.success) {
+            let list = response.data.top5CList;
+            list.views = newViews;
+            store.updateCList(list, id);
+        }
+    }
+
     store.Comment = async function (id, newComments) {
         let response = await api.getTop5ListById(id)
         if(response.data.success) {
             let list = response.data.top5List;
             list.comments = newComments;
             store.updateList(list, id);
+        }
+    }
+
+    store.CComment = async function (id, newComments) {
+        let response = await api.getTop5CListById(id)
+        if(response.data.success) {
+            let list = response.data.top5CList;
+            list.comments = newComments;
+            store.updateCList(list, id);
         }
     }
     
@@ -555,6 +688,16 @@ function GlobalStoreContextProvider(props) {
     }
     store.updateList = async function(list, id) {
         let response = await api.updateTop5ListById(id, list)
+        if (response.data.success) {
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: store.currentList
+            });
+        }
+    }
+
+    store.updateCList = async function(list, id) {
+        let response = await api.updateTop5CListById(id, list)
         if (response.data.success) {
             storeReducer({
                 type: GlobalStoreActionType.SET_CURRENT_LIST,
@@ -587,6 +730,15 @@ function GlobalStoreContextProvider(props) {
             payload: newView
         });
     }
+
+    store.loadCommunityLists = function() {
+        let newView = "Community"
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_VIEW,
+            payload: newView
+        });
+    }
+    
 
     store.Search = function(search) {
         storeReducer({

@@ -156,7 +156,7 @@ createTop5CList = (req, res) => {
 
     const top5CList = new Top5CList(body);
     console.log("creating top5List: " + JSON.stringify(top5CList));
-    if (!top5List) {
+    if (!top5CList) {
         return res.status(400).json({ success: false, error: err })
     }
 
@@ -210,7 +210,7 @@ updateTop5CList = async (req, res) => {
                 console.log("SUCCESS!!!");
                 return res.status(200).json({
                     success: true,
-                    id: top5List._id,
+                    id: top5CList._id,
                     message: 'Top 5 List updated!',
                 })
             })

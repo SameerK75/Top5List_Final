@@ -43,6 +43,7 @@ function ListCard(props) {
     console.log(comments);   
    
 
+
     function handleLike() {
         if(likes.includes(auth.user.userName)) {
             let newLikes = likes;
@@ -68,6 +69,32 @@ function ListCard(props) {
         }
     }
 
+    function handleCommunityLike() {
+        if(likes.includes(auth.user.userName)) {
+            let newLikes = likes;
+            let index = likes.indexOf(auth.user.userName)
+            newLikes.splice(index, 1)
+            store.CLike(props.id, newLikes);
+        }
+        else if(dislikes.includes(auth.user.userName)) {
+            let newDislikes = dislikes;
+            let index = dislikes.indexOf(auth.user.userName)
+            newDislikes.splice(index,1)
+            store.CDislike(props.id, newDislikes);
+            let newLikes = likes;
+            newLikes.push(auth.user.userName);
+            store.CLike(props.id, newLikes);
+        }
+        else {
+            let newLikes = likes;
+            console.log(newLikes);
+            newLikes.push(auth.user.userName);
+            console.log(newLikes);
+            store.CLike(props.id, newLikes);
+        }
+    }
+
+
     function handleDislike() {
         if(dislikes.includes(auth.user.userName)) {
             let newDislikes = dislikes;
@@ -91,6 +118,29 @@ function ListCard(props) {
         }
     }
 
+    function handleCommunityDislike() {
+        if(dislikes.includes(auth.user.userName)) {
+            let newDislikes = dislikes;
+            let index = dislikes.indexOf(auth.user.userName)
+            newDislikes.splice(index,1)
+            store.CDislike(props.id, newDislikes);
+        }
+        else if(likes.includes(auth.user.userName)) {
+            let newLikes = likes;
+            let index = likes.indexOf(auth.user.userName)
+            newLikes.splice(index, 1)
+            store.CLike(props.id, newLikes);
+            let newDislikes = dislikes;
+            newDislikes.push(auth.user.userName);
+            store.CDislike(props.id, newDislikes);
+        }
+        else {
+            let newDislikes = dislikes;
+            newDislikes.push(auth.user.userName);
+            store.CDislike(props.id, newDislikes);
+        }
+    }
+
     function handleComment(event) {
         if(event.code === 'Enter') {
             let user = auth.user.userName;
@@ -103,7 +153,12 @@ function ListCard(props) {
             let newComments = comments;
             newComments.unshift(pair);
             console.log(newComments);
-            store.Comment(props.id, newComments);
+            if(store.view == "Community") {
+                store.CComment(props.id,newComments)
+            }
+            else {
+                store.Comment(props.id, newComments);
+            }
             updateComments(newComments);
             event.target.value = "";
         }
@@ -148,7 +203,12 @@ function ListCard(props) {
 
     function handleExpand() {
         setExpanded(true);
-        if(published) {
+        if(store.view == "Community") {
+            let newViews = views + 1
+            store.CViews(props.id, newViews);
+            setViews(newViews);
+        }
+        else if(published) {
             let newViews = views + 1
             store.Views(props.id, newViews);
             setViews(newViews);
@@ -160,6 +220,17 @@ function ListCard(props) {
     }
 
     //CONDITIONALS FOR BUTTONS
+    let listOwner = "";
+    if(store.view !== "Community") {
+        listOwner = listUser;
+    }
+
+    let item1 = items[0]
+    let item2 = items[1]
+    let item3 = items[2]
+    let item4 = items[3]
+    let item5 = items[4]
+
     let LikeButton = "";
     let likesNum = "";
     let publishedtext =<Typography variant = "h5"
@@ -180,9 +251,12 @@ function ListCard(props) {
         handleDeleteList(event, props.id)
     }} aria-label='delete'><DeleteOutlineIcon sx = {{fontSize: 55}}/></IconButton>
     
+
     if(listUser !== auth.user.userName) {
         deleteButton = "";
     }
+
+
     if(published) {
         LikeButton = 
         <IconButton onClick = {handleLike}> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>;
@@ -216,6 +290,32 @@ function ListCard(props) {
         
     }
 
+    if(store.view == "Community") {
+        let pairsArray = items;
+        let newArray = pairsArray.sort(function(a, b) {
+            if(a.votes > b.votes) {
+                return -1
+            }
+            else if(a.votes < b.votes) {
+                return 1
+            }
+            else {
+                return 0
+            }
+        })
+        item1 = newArray[0].item + "Votes: " + newArray[0].votes;
+        item2 = newArray[1].item + "Votes: " + newArray[1].votes;
+        item3 = newArray[2].item + "Votes: " + newArray[2].votes;
+        item4 = newArray[3].item + "Votes: " + newArray[3].votes;
+        item5 = newArray[4].item + "Votes: " + newArray[4].votes;
+
+        LikeButton = 
+        <IconButton onClick = {handleCommunityLike}> <ThumbUpAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>;
+
+        DislikeButton = <IconButton onClick = {handleCommunityDislike}><ThumbDownAltOutlinedIcon sx = {{fontSize: 55}}/></IconButton>;
+    }
+
+
     let newCard =
         <ListItem
             id={props.key}
@@ -230,7 +330,7 @@ function ListCard(props) {
                 <Grid item xs = {7} >
                     <Box sx = {{flexDirection: 'column'}}>
                         <Typography variant = "h4" fontSize = "40px">{listName}</Typography>
-                        <Typography variant = "h4" fontSize = "15px">By: {listUser}</Typography>
+                        <Typography variant = "h4" fontSize = "15px">By: {listOwner}</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs = {1}> {LikeButton}  
@@ -290,11 +390,11 @@ function ListCard(props) {
 
                 <Grid item xs = {6}>
                     <Box sx = {{display: "flex", flexDirection: 'column', height: "150px"}}>
-                        <Typography variant = "h4" fontSize = "20px">1. {items[0]}</Typography>
-                        <Typography variant = "h4" fontSize = "20px">2. {items[1]}</Typography>
-                        <Typography variant = "h4" fontSize = "20px">3. {items[2]}</Typography>
-                        <Typography variant = "h4" fontSize = "20px">4. {items[3]}</Typography>
-                        <Typography variant = "h4" fontSize = "20px">5. {items[4]}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">1. {item1}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">2. {item2}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">3. {item3}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">4. {item4}</Typography>
+                        <Typography variant = "h4" fontSize = "20px">5. {item5}</Typography>
                     </Box>
                 </Grid>
                 {commentCards}
